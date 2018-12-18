@@ -24,7 +24,7 @@ class FindParams(object):
             
             # Optimization
             push_layer = 'prob',
-            push_channel = 278,
+            push_channel = 10,
             push_spatial = (0,0),
             push_dir = 1.0,
             decay = .01,
@@ -67,6 +67,10 @@ class FindParams(object):
 
         # Concatenate push_channel and push_spatial into push_unit and add to params for conveninece
         self.push_unit = (self.push_channel,) + self.push_spatial
+	print("Yavuzzzzz333333")
+	print(self.push_spatial)
+	print(self.push_channel)
+	print(self.push_unit)
 
     def __str__(self):
         ret = StringIO.StringIO()
@@ -156,16 +160,19 @@ class GradientOptimizer(object):
     
     def __init__(self, net, data_mean, labels = None, label_layers = None, channel_swap_to_rgb = None):
         self.net = net
+	data_mean = np.zeros((28, 28,1))
+	print(data_mean)
         self.data_mean = data_mean
-        self.labels = labels if labels else ['labels not provided' for ii in range(1000)]
+        self.labels = labels if labels else ['labels not provided' for ii in range(10)]
         self.label_layers = label_layers if label_layers else tuple()
+	print(channel_swap_to_rgb)
         if channel_swap_to_rgb:
             self.channel_swap_to_rgb = array(channel_swap_to_rgb)
         else:
-            data_n_channels = self.data_mean.shape[0]
+            data_n_channels = 1
             self.channel_swap_to_rgb = arange(data_n_channels)   # Don't change order
 
-        self._data_mean_rgb_img = self.data_mean[self.channel_swap_to_rgb].transpose((1,2,0))  # Store as (227,227,3) in RGB order.
+        #self._data_mean_rgb_img = self.data_mean[self.channel_swap_to_rgb].transpose((1,2,0))  # Store as (227,227,3) in RGB order.
 
     def run_optimize(self, params, prefix_template = None, brave = False, skipbig = False):
         '''All images are in Caffe format, e.g. shape (3, 227, 227) in BGR order.'''
@@ -174,6 +181,9 @@ class GradientOptimizer(object):
         print params
         
         x0 = self._get_x0(params)
+        print("x0")
+        print(x0.shape)
+        print(xx.shape)
         xx, results = self._optimize(params, x0)
         self.save_results(params, results, prefix_template, brave = brave, skipbig = skipbig)
 
@@ -231,12 +241,12 @@ class GradientOptimizer(object):
         for ii in range(params.max_iter):
             # 0. Crop data
             xx = minimum(255.0, maximum(0.0, xx + self.data_mean)) - self.data_mean     # Crop all values to [0,255]
-
-
-            # 1. Push data through net
             out = self.net.forward_all(data = xx)
             #shownet(net)
+            print("outtt")
+            print(out)
             acts = self.net.blobs[params.push_layer].data[0]    # chop off batch dimension
+            print(acts)
 
             if not is_conv:
                 # promote to 3D
@@ -245,6 +255,10 @@ class GradientOptimizer(object):
             valmax = acts.max()
             # idxmax for fc or prob layer will be like:  (278, 0, 0)
             # idxmax for conv layer will be like:        (37, 4, 37)
+            print("Yavuzzz Unitzzzz")
+            #print(params.push_unit)
+            #print(acts.shape)
+        
             obj = acts[params.push_unit]
 
             
@@ -318,7 +332,7 @@ class GradientOptimizer(object):
                         print 'Warning: blur-radius of .3 or less works very poorly'
                         #raise Exception('blur-radius of .3 or less works very poorly')
                     if ii % params.blur_every == 0:
-                        for channel in range(3):
+                        for channel in range(1):
                             cimg = gaussian_filter(xx[0,channel], params.blur_radius)
                             xx[0,channel] = cimg
                 if params.small_val_percentile > 0:

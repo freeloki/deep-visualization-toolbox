@@ -19,15 +19,15 @@ def main():
     parser.add_argument('datadir', type = str, default = '.', help = 'directory to look for files in')
     parser.add_argument('filelist', type = str, help = 'list of image files to consider, one per line')
     parser.add_argument('outfile', type = str, help = 'output filename for pkl')
-    #parser.add_argument('--mean', type = str, default = '', help = 'data mean to load')
+    parser.add_argument('--mean', type = str, default = '', help = 'data mean to load')
     args = parser.parse_args()
 
     imagenet_mean = load_imagenet_mean()
     net = caffe.Classifier(args.net_prototxt, args.net_weights,
-                           mean=imagenet_mean,
+                           args.mean,
                            channel_swap=(2,1,0),
                            raw_scale=255,
-                           image_dims=(256, 256))
+                           image_dims=(28, 28))
 
     if args.gpu:
         caffe.set_mode_gpu()

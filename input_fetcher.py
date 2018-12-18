@@ -129,8 +129,20 @@ class InputImageFetcher(CodependentThread):
                 else:
                     frame_full = read_cam_frame(self.bound_cap_device)
                     #print '====> just read frame', frame_full.shape
+                    #frame_full = cv2.cvtColor(frame_full, cv2.COLOR_RGB2GRAY)
                     frame = crop_to_square(frame_full)
-                    with self.lock:
+                    with self.lock: 
+                        frame = frame.astype('uint8')
+                        print("s")  
+                        #frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+                        print("q")     
+                        #frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+                        #frame = np.expand_dims(frame,axis=2)
+                        print(frame.shape)   
+                        self.latest_cam_frame = frame
+                        #frame = frame/3
+                        #frame = cv2.threshold(frame, 120, 255, cv2.THRESH_BINARY)[1]
+                        #self.latest_cam_frame = cv2.bitwise_not(frame)
                         self.latest_cam_frame = frame
                         self._increment_and_set_frame(self.latest_cam_frame, True)
             

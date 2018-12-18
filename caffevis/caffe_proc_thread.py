@@ -15,7 +15,10 @@ class CaffeProcThread(CodependentThread):
         CodependentThread.__init__(self, heartbeat_required)
         self.daemon = True
         self.net = net
-        self.input_dims = self.net.blobs['data'].data.shape[2:4]    # e.g. (227,227)
+        print("X")
+        print(self.net.blobs['data'].data)
+        self.input_dims = self.net.blobs['data'].data.shape[2:4]
+        print(self.input_dims)    # e.g. (227,227)
         self.state = state
         self.last_process_finished_at = None
         self.last_process_elapsed = None
@@ -91,12 +94,35 @@ class CaffeProcThread(CodependentThread):
 
                     im_small1 = cv2.resize(frame1, self.input_dims)
                     im_small2 = cv2.resize(frame2, self.input_dims)
+                    print("Y")                    
+                    print(im_small)
                     im_small = np.concatenate( (im_small1, im_small2), axis=2)
 
                 else:
+                    #print(im_small) 
+                    print(frame.shape)
+                    frame = frame.astype('uint8')    
+                    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)               
+                    print("Z")                    
                     im_small = cv2.resize(frame, self.input_dims)
+                    print(im_small.shape)  
+                    #gray_image = cv2.cvtColor(im_small, cv2.COLOR_BGR2GRAY)
+                    #print(gray_image.shape)
+                    #gray_image = cv2.resize(gray_image, self.input_dims)  
+                    #im_small = gray_image
+                    im_small = np.expand_dims(im_small,axis=2)
+                    print(im_small.shape)   
 
                 with WithTimer('CaffeProcThread:forward', quiet = self.debug_level < 1):
+                    print("Yavuz1")
+                    print(self.input_dims)
+                    print("yavuz2")
+                    print("Yavuz3")
+                    print(im_small.shape)
+                    print("yavuz4")
+                    print("Yavuz5")
+                    print(self.settings)
+                    print("yavuz6")
                     net_preproc_forward(self.settings, self.net, im_small, self.input_dims)
 
             if run_back:

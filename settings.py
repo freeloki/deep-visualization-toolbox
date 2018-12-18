@@ -13,7 +13,8 @@ try:
     from settings_local import *
 except ImportError:
     if not os.path.exists('settings_local.py'):
-        raise Exception('Could not import settings_local. Did you create it from the template? See README and start with:\n\n  $ cp models/caffenet-yos/settings_local.template-caffenet-yos.py settings_local.py')
+        #raise Exception('Could not import settings_local. Did you create it from the template? See README and start with:\n\n  $ cp models/caffenet-yos/settings_local.template-caffenet-yos.py settings_local.py')
+         raise Exception('Could not import settings_local. Did you create it from the template? See README and start with:\n\n  $ cp models/mnist-lenet/settings_local.template-mnist.py settings_local.py')
     else:
         raise
 # Resume usual pyc creation
@@ -162,7 +163,7 @@ help_thick = locals().get('help_thick', 1)
 ####################################
 
 # Whether to use GPU mode (if True) or CPU mode (if False)
-caffevis_mode_gpu = locals().get('caffevis_mode_gpu', True)
+caffevis_mode_gpu = locals().get('caffevis_mode_gpu', False)
 
 # Data mean, if any, to be subtracted from input image file / webcam
 # image. Specify as string path to file or tuple of one value per
@@ -305,7 +306,9 @@ caffevis_label_fsize = locals().get('caffevis_label_fsize', 1.0 * global_font_si
 caffevis_label_thick = locals().get('caffevis_label_thick', 1)
 
 # caffe net parameter - channel swap
-caffe_net_channel_swap = locals().get('caffe_net_channel_swap', (2,1,0))
+#YAVUZ
+#caffe_net_channel_swap = locals().get('caffe_net_channel_swap', (2,1,0))
+caffe_net_channel_swap = locals().get('caffe_net_channel_swap', None)
 
 
 ####################################

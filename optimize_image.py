@@ -136,7 +136,7 @@ def main():
     
     # Finish parsing args
     channel_swap_to_rgb = eval(args.channel_swap_to_rgb)
-    assert isinstance(channel_swap_to_rgb, tuple) and len(channel_swap_to_rgb) > 0, 'channel_swap_to_rgb should be a tuple'
+    #assert isinstance(channel_swap_to_rgb, tuple) and len(channel_swap_to_rgb) > 0, 'channel_swap_to_rgb should be a tuple'
     data_size = eval(args.data_size)
     assert isinstance(data_size, tuple) and len(data_size) == 2, 'data_size should be a length 2 tuple'
     #channel_swap_inv = tuple([net_channel_swap.index(ii) for ii in range(len(net_channel_swap))])
@@ -159,6 +159,9 @@ def main():
             print 'Or to use your own mean, change caffevis_data_mean in settings_local.py or override by running with `--mean MEAN_FILE` (see --help).\n'
             raise
         # Crop center region (e.g. 227x227) if mean is larger (e.g. 256x256)
+        print("Yavuz")
+        print(data_mean.shape[1])
+        print(data_size[0])
         excess_h = data_mean.shape[1] - data_size[0]
         excess_w = data_mean.shape[2] - data_size[1]
         assert excess_h >= 0 and excess_w >= 0, 'mean should be at least as large as %s' % repr(data_size)

@@ -4,10 +4,14 @@ import cv2
 import numpy as np
 import skimage
 import skimage.io
+import time
+import threading
+
 from copy import deepcopy
 
 from misc import WithTimer
 
+lock = threading.Lock()
 
 def norm01(arr):
     arr = arr.copy()
@@ -38,6 +42,14 @@ def norm0255(arr):
 
 def cv2_read_cap_rgb(cap, saveto = None):
     rval, frame = cap.read()
+
+    with lock:
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        frame = cv2.bitwise_not(frame)
+        frame = cv2.flip( frame, 1 )
+        thresholded = cv2.threshold(frame, 127, 255, cv2.THRESH_BINARY)[1]
+        frame = thresholded
+    
     if saveto:
         cv2.imwrite(saveto, frame)
     if len(frame.shape) == 2:
